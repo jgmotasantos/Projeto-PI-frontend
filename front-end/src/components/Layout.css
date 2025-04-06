@@ -1,95 +1,197 @@
 .layout-container {
-    display: flex;
-    height: 100vh;
-    background-color: #f3f3f3;
-    font-family: 'Montserrat', sans-serif;
-  }
-  
-  .sidebar {
-    width: 60px;
-    background-color: #0d1f60;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 0;
-    gap: 30px;
-  }
-  
-  .logo {
-    width: 40px;
-    height: 40px;
-    background-image: url("/assets/logo-icon.png");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-  }
-  
-  .menu img {
-    width: 24px;
-    height: 24px;
-    margin: 16px 0;
-    cursor: pointer;
-  }
-  
-  .main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .topbar {
-    height: 60px;
-    background-color: #0d1f60;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    justify-content: space-between;
-  }
-  
-  .search-bar {
-    height: 36px;
-    border-radius: 18px;
-    border: none;
-    padding: 0 15px;
-    width: 300px;
-    font-size: 14px;
-  }
-  
-  .topbar-actions {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    color: white;
-  }
-  
-  .topbar-actions .add-btn {
-    background-color: #292d91;
-    color: white;
-    border: none;
-    font-size: 18px;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-  
-  .topbar-actions img {
-    width: 18px;
-    height: 18px;
-    filter: brightness(0) invert(1); /* ícones brancos */
-    cursor: pointer;
-  }
-  
-  .topbar-actions .user {
-    border-left: 1px solid #fff;
-    padding-left: 12px;
-    font-size: 13px;
-  }
-  
-  .page-content {
-    background-color: white;
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-  }
-  
+  display: flex;
+  height: 100vh;
+  background-color: #f3f3f3;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 70px;
+  background-color: #040F43;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  justify-content: space-between;
+  position: relative;
+}
+
+/* Ícone menu hambúrguer */
+.top-left-icon {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Ícones maiores */
+.large-icon {
+  width: 45px;
+  height: 45px;
+  color: white;
+}
+
+/* Botões laterais */
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* Logo grande lateral */
+.logo-container {
+  margin-top: 45px;
+  margin-bottom: 20px;
+}
+
+.logo-img-full {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Ícones centralizados na sidebar */
+.menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+/* Ícone padrão */
+.icon {
+  width: 20px;
+  height: 20px;
+  color: white;
+  cursor: pointer;
+}
+
+/* Ícone redondo */
+.circle {
+  background-color: #292d91;
+  border-radius: 9999px;
+  padding: 4px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* CONTEÚDO PRINCIPAL */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* border-radius removido */
+  overflow: hidden;
+}
+
+/* TOPO */
+.topbar {
+  height: 60px;
+  background-color: #040F43;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  justify-content: space-between;
+  color: white;
+}
+
+/* Campo de pesquisa */
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+}
+
+.search-bar {
+  height: 36px;
+  border-radius: 18px;
+  border: none;
+  padding: 0 40px 0 36px;
+  width: 100%;
+  font-size: 14px;
+  background-color: #C1CAEB;
+  color: #000;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: #333;
+}
+
+.clear-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: #333;
+  cursor: pointer;
+}
+
+/* AÇÕES NA TOPOBAR */
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: white;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-left: 1px solid white;
+  padding-left: 12px;
+}
+
+.user-profile .user {
+  font-size: 13px;
+}
+
+/* CONTEÚDO BRANCO */
+.page-content {
+  background-color: white;
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.page-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.page-content th {
+  background-color: #f0f0f0;
+  color: #000; /* Texto preto */
+  font-weight: 600;
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+.page-content td {
+  padding: 10px 12px;
+  color: #000; /* Texto preto */
+  border-bottom: 1px solid #ccc;
+}
+
+.page-content tr:last-child td {
+  border-bottom: none;
+}
