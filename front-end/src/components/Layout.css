@@ -1,0 +1,95 @@
+.layout-container {
+    display: flex;
+    height: 100vh;
+    background-color: #f3f3f3;
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  .sidebar {
+    width: 60px;
+    background-color: #0d1f60;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    gap: 30px;
+  }
+  
+  .logo {
+    width: 40px;
+    height: 40px;
+    background-image: url("/assets/logo-icon.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
+  .menu img {
+    width: 24px;
+    height: 24px;
+    margin: 16px 0;
+    cursor: pointer;
+  }
+  
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .topbar {
+    height: 60px;
+    background-color: #0d1f60;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    justify-content: space-between;
+  }
+  
+  .search-bar {
+    height: 36px;
+    border-radius: 18px;
+    border: none;
+    padding: 0 15px;
+    width: 300px;
+    font-size: 14px;
+  }
+  
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: white;
+  }
+  
+  .topbar-actions .add-btn {
+    background-color: #292d91;
+    color: white;
+    border: none;
+    font-size: 18px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .topbar-actions img {
+    width: 18px;
+    height: 18px;
+    filter: brightness(0) invert(1); /* ícones brancos */
+    cursor: pointer;
+  }
+  
+  .topbar-actions .user {
+    border-left: 1px solid #fff;
+    padding-left: 12px;
+    font-size: 13px;
+  }
+  
+  .page-content {
+    background-color: white;
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
