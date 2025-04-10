@@ -4,8 +4,8 @@ function TelaTarefa() {
   return (
     <div className="tarefa-container">
       <div className="tarefa-header">
-        <h2>Tarefas</h2>
-        <button className="nova-btn">Criar nova tarefa</button>
+        <h1>Editais</h1>
+        <button className="nova-btn">Filtro</button>
       </div>
 
       <div className="tarefa-placeholder">
