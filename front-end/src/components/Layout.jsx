@@ -1,5 +1,6 @@
 import "./Layout.css";
 import { Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 import {
   HomeIcon,
@@ -19,6 +20,24 @@ import {
 
 function Layout() {
   const navigate = useNavigate();
+  const [usuario, setUsuario] = useState("User Account");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        setUsuario(payload.sub);
+      } catch {
+        setUsuario("Usuário");
+      }
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   return (
     <div className="layout-container">
@@ -64,10 +83,10 @@ function Layout() {
             <HomeIcon className="icon" />
             <Cog6ToothIcon className="icon" />
             <BellIcon className="icon" />
-            <ArrowRightOnRectangleIcon className="icon" />
+            <ArrowRightOnRectangleIcon className="icon" onClick={handleLogout} title="Logout" />
             <div className="user-profile">
               <UserCircleIcon className="icon" />
-              <span className="user">User Account</span>
+              <span className="user">{usuario}</span>
             </div>
           </div>
         </header>
