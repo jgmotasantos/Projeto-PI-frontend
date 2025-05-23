@@ -25,13 +25,6 @@
   cursor: pointer;
 }
 
-.usuario-nome {
-  margin-left: auto;
-  margin-right: 1rem;
-  font-weight: 600;
-  color: #0d1f60;
-}
-
 .empresa-tabela {
   width: 100%;
   border-collapse: collapse;
@@ -55,6 +48,7 @@
   margin-top: 2rem;
 }
 
+/* Slide */
 .slide-form {
   position: fixed;
   top: 0;
@@ -96,11 +90,29 @@
   color: #000;
 }
 
-.slide-form input {
-  padding: 10px;
+/* Labels e Campos */
+.slide-form label {
+  color: #000;
+  font-weight: 600;
+}
+
+.slide-form label::after {
+  content: attr(data-required);
+  color: red;
+  margin-left: 4px;
+}
+
+.slide-form .campo {
+  background-color: #f0f0f0;
+  color: #000;
   border: 1px solid #ccc;
   border-radius: 6px;
+  padding: 10px;
   font-size: 14px;
+}
+
+.slide-form .campo::placeholder {
+  color: #777;
 }
 
 .slide-actions {

@@ -3,34 +3,84 @@ import "./empresa.css";
 
 function TelaEmpresa() {
   const [empresas, setEmpresas] = useState([]);
+  const [contatos, setContatos] = useState([]);
   const [mostrarSlide, setMostrarSlide] = useState(false);
-  const [form, setForm] = useState({ nome: "", cnpj: "", telefone: "", setor: "", endereco: "" });
-  const token = localStorage.getItem("token");
+  const [erroCampos, setErroCampos] = useState(false);
+
+  const [form, setForm] = useState({
+    nome: "",
+    dominio: "",
+    cnpj: "",
+    area_atuacao: "",
+    num_funcionarios: "",
+    fabricante: "",
+    contato_associado_id: "",
+    negocio_associado_id: "",
+    criador_id: 1,
+  });
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
     if (!token) return;
 
     fetch("http://localhost:8000/empresas/", {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((res) => res.json())
-      .then((data) => setEmpresas(data.empresas || []));
-  }, [token]);
+      .then((data) => setEmpresas(data));
+
+    fetch("http://localhost:8000/contatos/", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setContatos(data.contatos || []));
+  }, []);
 
   const handleCadastro = async () => {
+    const obrigatorios = ["nome", "dominio", "cnpj", "area_atuacao", "num_funcionarios", "criador_id"];
+    const algumVazio = obrigatorios.some((campo) => !form[campo]);
+
+    if (algumVazio) {
+      setErroCampos(true);
+      return;
+    }
+
+    setErroCampos(false);
+    const token = localStorage.getItem("token");
+
     const res = await fetch("http://localhost:8000/empresas/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(form),
+      body: JSON.stringify({
+        ...form,
+        num_funcionarios: parseInt(form.num_funcionarios),
+        contato_associado_id: form.contato_associado_id || null,
+        negocio_associado_id: form.negocio_associado_id || null,
+      }),
     });
+
     if (res.ok) {
       const nova = await res.json();
       setEmpresas([...empresas, nova]);
       setMostrarSlide(false);
-      setForm({ nome: "", cnpj: "", telefone: "", setor: "", endereco: "" });
+      setForm({
+        nome: "",
+        dominio: "",
+        cnpj: "",
+        area_atuacao: "",
+        num_funcionarios: "",
+        fabricante: "",
+        contato_associado_id: "",
+        negocio_associado_id: "",
+        criador_id: 1,
+      });
     }
   };
 
@@ -49,10 +99,10 @@ function TelaEmpresa() {
         <table className="empresa-tabela">
           <thead>
             <tr>
-              <th>Nome da Empresa</th>
-              <th>CNPJ da Empresa</th>
-              <th>Última Atividade</th>
-              <th>Número de Telefone</th>
+              <th>Nome</th>
+              <th>CNPJ</th>
+              <th>Domínio</th>
+              <th>Funcionários</th>
             </tr>
           </thead>
           <tbody>
@@ -60,8 +110,8 @@ function TelaEmpresa() {
               <tr key={i}>
                 <td>{e.nome}</td>
                 <td>{e.cnpj}</td>
-                <td>{e.atividade || "—"}</td>
-                <td>{e.telefone || "—"}</td>
+                <td>{e.dominio}</td>
+                <td>{e.num_funcionarios}</td>
               </tr>
             ))}
           </tbody>
@@ -73,24 +123,48 @@ function TelaEmpresa() {
           <h3>Criar nova empresa</h3>
           <button className="fechar" onClick={() => setMostrarSlide(false)}>×</button>
         </div>
-        <label>Nome da Empresa</label>
-        <input type="text" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
 
-        <label>CNPJ da Empresa</label>
-        <input type="text" value={form.cnpj} onChange={(e) => setForm({ ...form, cnpj: e.target.value })} />
+        {erroCampos && (
+          <p style={{ color: "red", marginBottom: "10px", fontWeight: "bold" }}>
+            Preencha todos os campos obrigatórios marcados com *
+          </p>
+        )}
+
+        <label data-required="*">Nome da Empresa</label>
+        <input className="campo" type="text" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
+
+        <label data-required="*">Domínio</label>
+        <input className="campo" type="text" value={form.dominio} onChange={(e) => setForm({ ...form, dominio: e.target.value })} />
+
+        <label data-required="*">CNPJ</label>
+        <input className="campo" type="text" value={form.cnpj} onChange={(e) => setForm({ ...form, cnpj: e.target.value })} />
+
+        <label data-required="*">Área de Atuação</label>
+        <input className="campo" type="text" value={form.area_atuacao} onChange={(e) => setForm({ ...form, area_atuacao: e.target.value })} />
+
+        <label data-required="*">Nº de Funcionários</label>
+        <input className="campo" type="number" value={form.num_funcionarios} onChange={(e) => setForm({ ...form, num_funcionarios: e.target.value })} />
+
+        <label>Fabricante</label>
+        <input className="campo" type="text" value={form.fabricante} onChange={(e) => setForm({ ...form, fabricante: e.target.value })} />
 
         <label>Contato Associado</label>
-        <input type="text" value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} />
-
-        <label>Setor de atuação</label>
-        <input type="text" value={form.setor} onChange={(e) => setForm({ ...form, setor: e.target.value })} />
-
-        <label>Endereço</label>
-        <input type="text" value={form.endereco} onChange={(e) => setForm({ ...form, endereco: e.target.value })} />
+        <select
+          className="campo"
+          value={form.contato_associado_id}
+          onChange={(e) => setForm({ ...form, contato_associado_id: e.target.value })}
+        >
+          <option value="">Nenhum</option>
+          {contatos.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.nome} ({c.email})
+            </option>
+          ))}
+        </select>
 
         <div className="slide-actions">
-          <button onClick={() => setMostrarSlide(false)} className="cancelar">Cancelar</button>
-          <button onClick={handleCadastro} className="criar">Criar</button>
+          <button className="cancelar" onClick={() => setMostrarSlide(false)}>Cancelar</button>
+          <button className="criar" onClick={handleCadastro}>Criar</button>
         </div>
       </div>
     </div>
