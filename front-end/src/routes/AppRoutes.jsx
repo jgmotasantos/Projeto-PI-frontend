@@ -10,6 +10,7 @@ import TelaEmpresa from "../pages/Empresa";
 import TelaCliente from "../pages/Cliente";
 import TelaNegocio from "../pages/Negocio";
 import TelaTarefa from "../pages/Tarefa";
+import DetalhesEmpresa from "../pages/Empresa/DetalhesEmpresa";
 
 // Layout padrão
 import Layout from "../components/Layout";
@@ -26,6 +27,7 @@ function AppRoutes() {
         <Route element={<Layout />}>
           <Route path="/" element={<TelaInicial />} />
           <Route path="/empresas" element={<TelaEmpresa />} />
+          <Route path="/empresas/:id" element={<DetalhesEmpresa />} />
           <Route path="/clientes" element={<TelaCliente />} />
           <Route path="/negocios" element={<TelaNegocio />} />
           <Route path="/tarefas" element={<TelaTarefa />} />

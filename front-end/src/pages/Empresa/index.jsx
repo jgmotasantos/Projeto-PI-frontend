@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "./empresa.css";
 
 function TelaEmpresa() {
@@ -29,7 +30,7 @@ function TelaEmpresa() {
       },
     })
       .then((res) => res.json())
-      .then((data) => setEmpresas(data));
+      .then((data) => setEmpresas(Array.isArray(data) ? data : []));
 
     fetch("http://localhost:8000/contatos/", {
       headers: {
@@ -85,9 +86,9 @@ function TelaEmpresa() {
   };
 
   return (
-    <div className="empresa-container">
-      <div className="empresa-header">
-        <h2>Empresas</h2>
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px" }}>
+        <h2 style={{ margin: 0 }}>Empresas</h2>
         <button className="nova-btn" onClick={() => setMostrarSlide(true)}>
           Criar nova empresa
         </button>
@@ -108,7 +109,11 @@ function TelaEmpresa() {
           <tbody>
             {empresas.map((e, i) => (
               <tr key={i}>
-                <td>{e.nome}</td>
+                <td>
+                  <Link to={`/empresas/${e.id}`} style={{ color: "#0d1f60", textDecoration: "underline" }}>
+                    {e.nome}
+                  </Link>
+                </td>
                 <td>{e.cnpj}</td>
                 <td>{e.dominio}</td>
                 <td>{e.num_funcionarios}</td>

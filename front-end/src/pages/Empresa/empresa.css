@@ -1,3 +1,13 @@
+/* Correção de visibilidade */
+.col-esquerda,
+.col-central,
+.col-direita,
+.item-card,
+.item-card * {
+  color: #000 !important;
+}
+
+/* Restante do CSS original mantido */
 .empresa-container {
   padding: 40px;
   font-family: Arial, sans-serif;
@@ -48,7 +58,6 @@
   margin-top: 2rem;
 }
 
-/* Slide */
 .slide-form {
   position: fixed;
   top: 0;
@@ -90,7 +99,6 @@
   color: #000;
 }
 
-/* Labels e Campos */
 .slide-form label {
   color: #000;
   font-weight: 600;
@@ -137,4 +145,86 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.detalhes-container {
+  display: flex;
+  height: calc(100vh - 100px);
+  gap: 10px;
+  padding: 20px;
+}
+
+.col-esquerda, .col-direita {
+  width: 260px;
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-radius: 8px;
+  transition: width 0.3s ease;
+  overflow-y: auto;
+  position: relative;
+}
+
+.col-central {
+  flex: 1;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  overflow-y: auto;
+}
+
+.header-esquerda {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.icones-empresa svg {
+  font-size: 20px;
+  color: #0d1f60;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  position: absolute;
+  top: 10px;
+  right: -16px;
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.toggle-btn.direita {
+  left: -16px;
+  right: auto;
+}
+
+.expand-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.expand-btn.esquerda {
+  margin-right: 8px;
+}
+
+.expand-btn.direita {
+  margin-left: 8px;
+}
+
+.recolhida {
+  display: none;
+}
+
+.item-card {
+  background-color: #fff;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 10px;
 }
