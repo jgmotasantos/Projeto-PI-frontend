@@ -4,12 +4,35 @@ import "./cadastro.css";
 function TelaCadastro() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
+  const [confirmarEmail, setConfirmarEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState(false);
 
+  const validarSenha = (senha) => {
+    const regex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+    return regex.test(senha);
+  };
+
   const handleCadastro = async (e) => {
     e.preventDefault();
+
+    if (email !== confirmarEmail) {
+      setErro("Os e-mails não coincidem.");
+      return;
+    }
+
+    if (senha !== confirmarSenha) {
+      setErro("As senhas não coincidem.");
+      return;
+    }
+
+    if (!validarSenha(senha)) {
+      setErro("A senha deve conter ao menos 8 caracteres, uma letra maiúscula e um número.");
+      return;
+    }
+
     try {
       const res = await fetch("http://localhost:8000/usuarios/", {
         method: "POST",
@@ -42,12 +65,18 @@ function TelaCadastro() {
             <label>Email address</label>
             <input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
 
+            <label>Confirm Email</label>
+            <input type="email" placeholder="Confirm your email" value={confirmarEmail} onChange={(e) => setConfirmarEmail(e.target.value)} required />
+
             <label>Password</label>
             <input type="password" placeholder="********" value={senha} onChange={(e) => setSenha(e.target.value)} required />
 
+            <label>Confirm Password</label>
+            <input type="password" placeholder="********" value={confirmarSenha} onChange={(e) => setConfirmarSenha(e.target.value)} required />
+
             <div className="form-options">
               <label>
-                <input type="checkbox" /> I agree to the <a href="#">terms & policy</a>
+                <input type="checkbox" required /> I agree to the <a href="#">terms & policy</a>
               </label>
             </div>
 
@@ -74,7 +103,6 @@ function TelaCadastro() {
           </form>
         </div>
       </div>
-
       <div className="login-right"></div>
     </div>
   );
