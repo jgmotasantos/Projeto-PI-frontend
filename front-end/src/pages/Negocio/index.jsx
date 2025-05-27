@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "./negocio.css";
 
 function TelaNegocio() {
@@ -108,7 +109,11 @@ function TelaNegocio() {
           <tbody>
             {negocios.map((n, i) => (
               <tr key={i}>
-                <td>{n.titulo}</td>
+                <td>
+                  <Link to={`/negocios/${n.id}`} style={{ color: "#0d1f60", textDecoration: "underline" }}>
+                    {n.titulo}
+                  </Link>
+                </td>
                 <td>{empresas.find((e) => e.id === n.empresa_id)?.nome || "—"}</td>
                 <td>{contatos.find((c) => c.id === n.contato_id)?.nome || "—"}</td>
                 <td>R$ {parseFloat(n.valor).toFixed(2)}</td>
@@ -120,6 +125,7 @@ function TelaNegocio() {
         </table>
       )}
 
+      {/* Slide de criação de negócio */}
       <div className={`slide-form ${mostrarSlide ? "open" : ""}`}>
         <div className="slide-header">
           <h3>Criar novo negócio</h3>
@@ -133,33 +139,66 @@ function TelaNegocio() {
         )}
 
         <label data-required="*">Título</label>
-        <input className="campo" type="text" value={form.titulo} onChange={(e) => setForm({ ...form, titulo: e.target.value })} />
+        <input
+          className="campo"
+          type="text"
+          value={form.titulo}
+          onChange={(e) => setForm({ ...form, titulo: e.target.value })}
+        />
 
         <label data-required="*">Solução</label>
-        <input className="campo" type="text" value={form.solucao} onChange={(e) => setForm({ ...form, solucao: e.target.value })} />
+        <input
+          className="campo"
+          type="text"
+          value={form.solucao}
+          onChange={(e) => setForm({ ...form, solucao: e.target.value })}
+        />
 
         <label>Fabricante</label>
-        <input className="campo" type="text" value={form.fabricante} onChange={(e) => setForm({ ...form, fabricante: e.target.value })} />
+        <input
+          className="campo"
+          type="text"
+          value={form.fabricante}
+          onChange={(e) => setForm({ ...form, fabricante: e.target.value })}
+        />
 
         <label>Data de Fechamento</label>
-        <input className="campo" type="date" value={form.fechamento} onChange={(e) => setForm({ ...form, fechamento: e.target.value })} />
+        <input
+          className="campo"
+          type="date"
+          value={form.fechamento}
+          onChange={(e) => setForm({ ...form, fechamento: e.target.value })}
+        />
 
         <label data-required="*">Valor (R$)</label>
-        <input className="campo" type="number" value={form.valor} onChange={(e) => setForm({ ...form, valor: e.target.value })} />
+        <input
+          className="campo"
+          type="number"
+          value={form.valor}
+          onChange={(e) => setForm({ ...form, valor: e.target.value })}
+        />
 
         <label data-required="*">Empresa</label>
-        <select className="campo" value={form.empresa_id} onChange={(e) => setForm({ ...form, empresa_id: e.target.value })}>
-          <option value="">Selecione uma empresa</option>
+        <select
+          className="campo"
+          value={form.empresa_id}
+          onChange={(e) => setForm({ ...form, empresa_id: e.target.value })}
+        >
+          <option value="">Selecione</option>
           {empresas.map((e) => (
             <option key={e.id} value={e.id}>{e.nome}</option>
           ))}
         </select>
 
-        <label>Contato Associado</label>
-        <select className="campo" value={form.contato_id} onChange={(e) => setForm({ ...form, contato_id: e.target.value })}>
+        <label>Contato associado</label>
+        <select
+          className="campo"
+          value={form.contato_id}
+          onChange={(e) => setForm({ ...form, contato_id: e.target.value })}
+        >
           <option value="">Nenhum</option>
           {contatos.map((c) => (
-            <option key={c.id} value={c.id}>{c.nome} ({c.email})</option>
+            <option key={c.id} value={c.id}>{c.nome}</option>
           ))}
         </select>
 

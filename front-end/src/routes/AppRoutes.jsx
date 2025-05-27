@@ -11,6 +11,9 @@ import TelaCliente from "../pages/Cliente";
 import TelaNegocio from "../pages/Negocio";
 import TelaTarefa from "../pages/Tarefa";
 import DetalhesEmpresa from "../pages/Empresa/DetalhesEmpresa";
+import DetalhesNegocio from "../pages/Negocio/DetalhesNegocio";
+import DetalhesContato from "../pages/Cliente/DetalhesContato";
+
 
 // Layout padrão
 import Layout from "../components/Layout";
@@ -31,6 +34,8 @@ function AppRoutes() {
           <Route path="/clientes" element={<TelaCliente />} />
           <Route path="/negocios" element={<TelaNegocio />} />
           <Route path="/tarefas" element={<TelaTarefa />} />
+          <Route path="/negocios/:id" element={<DetalhesNegocio />} />
+          <Route path="/contatos/:id" element={<DetalhesContato />} />
         </Route>
       </Routes>
     </Router>

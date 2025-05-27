@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "./cliente.css";
 
 function TelaContato() {
@@ -32,7 +33,7 @@ function TelaContato() {
       },
     })
       .then((res) => res.json())
-      .then((data) => setEmpresas(data)); // ou data.empresas se vier com chave
+      .then((data) => setEmpresas(data || []));
   }, []);
 
   const handleCadastro = async () => {
@@ -88,7 +89,11 @@ function TelaContato() {
           <tbody>
             {contatos.map((c, i) => (
               <tr key={i}>
-                <td>{c.nome}</td>
+                <td>
+                  <Link to={`/contatos/${c.id}`} style={{ color: "#0d1f60", textDecoration: "underline" }}>
+                    {c.nome}
+                  </Link>
+                </td>
                 <td>{c.email || "—"}</td>
                 <td>{c.telefone || "—"}</td>
                 <td>{empresas.find((e) => e.id === c.empresa_id)?.nome || "—"}</td>
