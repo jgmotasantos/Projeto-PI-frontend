@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import "./cliente.css";
 
+
 function DetalhesContato() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -92,7 +93,6 @@ function DetalhesContato() {
         </div>
         <p><strong>Email:</strong> {contato.email}</p>
         <p><strong>Telefone:</strong> {contato.telefone}</p>
-        <p><strong>Cargo:</strong> {contato.cargo || "—"}</p>
         {contato.empresa && (
           <>
             <hr />
@@ -123,7 +123,18 @@ function DetalhesContato() {
 
       {/* COLUNA DIREITA */}
       <div className="col-direita">
-        <h4>Negócios Associados ({contato.negocios?.length || 0})</h4>
+        <h4>Empresas ({contato.empresa ? 1 : 0})</h4>
+        {contato.empresa ? (
+          <div className="item-card">
+            <strong>{contato.empresa.nome}</strong>
+            <p>CNPJ: {contato.empresa.cnpj}</p>
+            <p>Área: {contato.empresa.area_atuacao || "—"}</p>
+          </div>
+        ) : (
+          <p>Nenhuma empresa associada.</p>
+        )}
+
+        <h4>Negócios ({contato.negocios?.length || 0})</h4>
         {contato.negocios?.map((n) => (
           <div key={n.id} className="item-card">
             <strong>{n.titulo}</strong>
