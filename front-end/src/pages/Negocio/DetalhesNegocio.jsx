@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash, FaTasks, FaUserCircle, FaComments, FaRegClock } from "react-icons/fa";
+import { BsCalendarEvent, BsPeopleFill } from "react-icons/bs";
+import ModalCriacao from "../../components/ModalCriacao";
 import "./negocio.css";
 
 function DetalhesNegocio() {
@@ -10,6 +12,11 @@ function DetalhesNegocio() {
   const [mostrarEdicao, setMostrarEdicao] = useState(false);
   const [confirmarExclusao, setConfirmarExclusao] = useState(false);
   const [aba, setAba] = useState("tarefas");
+  const [tarefas, setTarefas] = useState([]);
+  const [observacoes, setObservacoes] = useState([]);
+  const [reunioes, setReunioes] = useState([]);
+  const [modalAberto, setModalAberto] = useState(false);
+  const [tipoModal, setTipoModal] = useState("");
   const [form, setForm] = useState({
     titulo: "",
     solucao: "",
@@ -36,6 +43,24 @@ function DetalhesNegocio() {
           valor: data.valor || "",
         });
       });
+
+    fetch(`http://localhost:8000/tarefas/negocio/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => res.json())
+      .then(setTarefas);
+
+    fetch(`http://localhost:8000/observacoes/negocio/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => res.json())
+      .then(setObservacoes);
+
+    fetch(`http://localhost:8000/reunioes/negocio/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => res.json())
+      .then(setReunioes);
   }, [id]);
 
   const handleSalvar = () => {
@@ -85,66 +110,73 @@ function DetalhesNegocio() {
       {/* CENTRAL */}
       <div className="col-central">
         <div className="abas">
-          <button
-            className={aba === "tarefas" ? "aba ativa" : "aba"}
-            onClick={() => setAba("tarefas")}
-          >
-            Tarefas
+          <button className={aba === "tarefas" ? "aba ativa" : "aba"} onClick={() => setAba("tarefas")}>
+            <FaTasks /> Tarefas
           </button>
-          <button
-            className={aba === "observacoes" ? "aba ativa" : "aba"}
-            onClick={() => setAba("observacoes")}
-          >
-            Observações
+          <button className={aba === "observacoes" ? "aba ativa" : "aba"} onClick={() => setAba("observacoes")}>
+            <FaComments /> Observações
           </button>
-          <button
-            className={aba === "reunioes" ? "aba ativa" : "aba"}
-            onClick={() => setAba("reunioes")}
-          >
-            Reuniões
+          <button className={aba === "reunioes" ? "aba ativa" : "aba"} onClick={() => setAba("reunioes")}>
+            <BsCalendarEvent /> Reuniões
           </button>
         </div>
 
         <div className="btn-adicionar">
-          {aba === "tarefas" && <button>+ Adicionar Tarefa</button>}
-          {aba === "observacoes" && <button>+ Adicionar Observação</button>}
-          {aba === "reunioes" && <button>+ Adicionar Reunião</button>}
+          {aba === "tarefas" && (
+            <button onClick={() => { setTipoModal("tarefa"); setModalAberto(true); }}>
+              + Adicionar Tarefa
+            </button>
+          )}
+          {aba === "observacoes" && (
+            <button onClick={() => { setTipoModal("observacao"); setModalAberto(true); }}>
+              + Adicionar Observação
+            </button>
+          )}
+          {aba === "reunioes" && (
+            <button onClick={() => { setTipoModal("reuniao"); setModalAberto(true); }}>
+              + Adicionar Reunião
+            </button>
+          )}
         </div>
+
+
 
         <div className="conteudo-aba">
           {aba === "tarefas" && (
             <>
-              <div className="tarefa finalizada">
-                <details>
-                  <summary><del>Tarefa 1: Iniciar contato com o Zezinho Barreto ✔️</del></summary>
-                </details>
-              </div>
-
-              <div className="tarefa pendente">
-                <details open>
-                  <summary><strong>Tarefa: Marcar nova reunião para apresentação</strong></summary>
-                  <p><strong>Criada por:</strong> Zezinho (AM)</p>
-                  <p><strong>Prazo da tarefa:</strong> 30/03/2025 às 08:00 GMT</p>
-                  <p><strong>Prioridade:</strong> <span style={{ color: 'red' }}>Alta</span></p>
-                  <p><strong>Atribuída a:</strong> Zezinho (PV)</p>
-                  <p><em><u>Adicionar comentário</u> 🗨️</em></p>
-                </details>
-              </div>
+              {tarefas.length === 0 && <p>Nenhuma tarefa cadastrada.</p>}
+              {tarefas.map(tarefa => (
+                <div key={tarefa.id} className={`tarefa ${tarefa.status === "concluida" ? "finalizada" : "pendente"}`}>
+                  <details>
+                    <summary><strong>{tarefa.titulo}</strong></summary>
+                    <p><FaRegClock /> <strong>Prazo:</strong> {tarefa.prazo}</p>
+                    <p><strong>Status:</strong> {tarefa.status}</p>
+                    <p><strong>Prioridade:</strong> {tarefa.prioridade}</p>
+                  </details>
+                </div>
+              ))}
             </>
           )}
 
           {aba === "observacoes" && (
             <div className="observacoes">
-              <p>📝 Reunião marcada com o cliente para o dia 30/03. Levar documentação técnica e proposta comercial.</p>
-              <p>📌 Cliente demonstrou interesse em outras soluções da Cisco.</p>
+              {observacoes.length === 0 && <p>Nenhuma observação cadastrada.</p>}
+              {observacoes.map(obs => (
+                <p key={obs.id}><FaComments /> {obs.texto}</p>
+              ))}
             </div>
           )}
 
           {aba === "reunioes" && (
             <div className="reunioes">
-              <p>📅 Reunião com Banco do Brasil — 30/03/2025 às 08:00 GMT</p>
-              <p>👥 Participantes: Zezinho (AM), Zezinho (PV)</p>
-              <p>🗒️ Pauta: Apresentação da solução de switches Cisco</p>
+              {reunioes.length === 0 && <p>Nenhuma reunião cadastrada.</p>}
+              {reunioes.map(reuniao => (
+                <div key={reuniao.id}>
+                  <p><BsCalendarEvent /> {reuniao.data} às {reuniao.hora}</p>
+                  <p><FaComments /> {reuniao.pauta}</p>
+                  <p><BsPeopleFill /> Participantes: {reuniao.participantes}</p>
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -213,7 +245,17 @@ function DetalhesNegocio() {
             </div>
           </div>
         </div>
+        
       )}
+      {modalAberto && (
+      <ModalCriacao
+        tipo={tipoModal}
+        negocioId={parseInt(id)}
+        onClose={() => setModalAberto(false)}
+        onCreated={() => window.location.reload()}
+      />
+    )}
+
     </div>
   );
 }

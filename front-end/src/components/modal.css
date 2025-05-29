@@ -1,0 +1,91 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 16px;
+  width: 450px;
+  max-width: 90%;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  font-family: Arial, sans-serif;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  font-size: 22px;
+  text-align: center;
+  color: #0d1f60;
+}
+
+.modal-content label {
+  font-weight: bold;
+  font-size: 14px;
+  color: #0d1f60;
+  margin-bottom: 4px;
+}
+
+.modal-content input.campo,
+.modal-content select.campo,
+.modal-content textarea.campo {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+  color: #000; /* <- Adicionado para forçar texto preto */
+}
+
+.modal-content textarea.campo {
+  resize: vertical;
+  min-height: 80px;
+  color: #000; /* <- redundante mas explícito */
+}
+
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.modal-actions button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.modal-actions button:first-child {
+  background-color: #ffffff;
+  border: 1px solid #0d1f60;
+  color: #0d1f60;
+}
+
+.modal-actions button:last-child {
+  background-color: #0d1f60;
+  color: #ffffff;
+  border: none;
+}
+
+.modal-actions button:hover {
+  opacity: 0.9;
+}
