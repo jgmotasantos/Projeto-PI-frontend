@@ -1,12 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./modal.css";
 
 function ModalCriacao({ tipo, negocioId, onClose, onCreated }) {
   const [form, setForm] = useState({});
+  const [usuarios, setUsuarios] = useState([]);
 
   const handleChange = (campo, valor) => {
     setForm(prev => ({ ...prev, [campo]: valor }));
   };
+
+  useEffect(() => {
+    if (tipo === "tarefa") {
+      const token = localStorage.getItem("token");
+      fetch("http://localhost:8000/usuarios/", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then(res => res.json())
+        .then(setUsuarios)
+        .catch(err => console.error("Erro ao buscar usuários:", err));
+    }
+  }, [tipo]);
 
   const handleSubmit = async () => {
     const token = localStorage.getItem("token");
@@ -66,8 +79,15 @@ function ModalCriacao({ tipo, negocioId, onClose, onCreated }) {
             <label>Prazo</label>
             <input className="campo" type="date" onChange={e => handleChange("prazo", e.target.value)} />
 
-            <label>Destinatário (ID)</label>
-            <input className="campo" placeholder="ID do destinatário" onChange={e => handleChange("destinatario", parseInt(e.target.value))} />
+            <label>Destinatário</label>
+            <select className="campo" onChange={e => handleChange("destinatario", parseInt(e.target.value))}>
+              <option value="">Selecione o usuário</option>
+              {usuarios.map(user => (
+                <option key={user.id} value={user.id}>
+                  {user.nome}
+                </option>
+              ))}
+            </select>
           </>
         )}
 
