@@ -16,8 +16,18 @@ function ModalCriacao({ tipo, negocioId, onClose, onCreated }) {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then(res => res.json())
-        .then(setUsuarios)
-        .catch(err => console.error("Erro ao buscar usuários:", err));
+        .then(data => {
+          if (Array.isArray(data)) {
+            setUsuarios(data);
+          } else {
+            console.error("Resposta inesperada de /usuarios/:", data);
+            setUsuarios([]);
+          }
+        })
+        .catch(err => {
+          console.error("Erro ao buscar usuários:", err);
+          setUsuarios([]);
+        });
     }
   }, [tipo]);
 
@@ -28,14 +38,35 @@ function ModalCriacao({ tipo, negocioId, onClose, onCreated }) {
 
     if (tipo === "tarefa") {
       endpoint = "tarefas";
-      payload = { ...form, negocio_id: negocioId, criador_id: 1 };
+      payload = {
+        titulo: form.titulo,
+        status: form.status,
+        prioridade: form.prioridade,
+        prazo: form.prazo,
+        destinatario: form.destinatario,
+        negocio_id: negocioId,
+        criador_id: 1,
+      };
     } else if (tipo === "observacao") {
       endpoint = "observacoes";
-      payload = { ...form, negocio_id: negocioId, usuario_id: 1 };
+      payload = {
+        texto: form.texto,
+        negocio_id: negocioId,
+        usuario_id: 1,
+      };
     } else if (tipo === "reuniao") {
       endpoint = "reunioes";
-      payload = { ...form, negocio_id: negocioId, usuario_id: 1 };
+      payload = {
+        data: form.data,
+        hora: form.hora,
+        pauta: form.pauta,
+        participantes: form.participantes,
+        negocio_id: negocioId,
+        usuario_id: 1,
+      };
     }
+
+    console.log("Payload final:", payload);
 
     await fetch(`http://localhost:8000/${endpoint}/`, {
       method: "POST",
@@ -44,7 +75,17 @@ function ModalCriacao({ tipo, negocioId, onClose, onCreated }) {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(payload),
-    });
+    })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => {
+            console.error("Erro ao criar tarefa:", err);
+            alert(JSON.stringify(err.detail || err, null, 2));
+          });
+        } else {
+          return res.json();
+        }
+      });
 
     onCreated();
     onClose();
@@ -70,11 +111,21 @@ function ModalCriacao({ tipo, negocioId, onClose, onCreated }) {
 
             <label>Prioridade</label>
             <select className="campo" onChange={e => handleChange("prioridade", e.target.value)}>
-              <option value="">Selecione a prioridade</option>
-              <option value="baixa">Baixa</option>
-              <option value="media">Média</option>
-              <option value="alta">Alta</option>
+              <option value="">Selecione uma prioridade</option>
+              <option value="Baixa">Baixa</option>
+              <option value="Média">Média</option>
+              <option value="Alta">Alta</option>
+              <option value="Crítica">Crítica</option>
             </select>
+                    
+            <label>Status</label>
+            <select className="campo" onChange={e => handleChange("status", e.target.value)}>
+              <option value="">Selecione um status</option>
+              <option value="pendente">Pendente</option>
+              <option value="em_andamento">Em andamento</option>
+              <option value="concluida">Concluída</option>
+            </select>
+
 
             <label>Prazo</label>
             <input className="campo" type="date" onChange={e => handleChange("prazo", e.target.value)} />
