@@ -358,3 +358,39 @@
   background-color: #0d1f60;
   color: white;
 }
+
+.tarefa-card summary {
+  cursor: pointer;
+  font-weight: bold;
+  padding: 8px;
+  background: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tarefa-detalhes {
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+}
+
+.concluir-btn {
+  margin-top: 8px;
+  background-color: #007bff;
+  border: none;
+  padding: 8px 12px;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.botoes-criacao {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px; 
+}

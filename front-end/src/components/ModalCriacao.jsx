@@ -79,7 +79,7 @@ function ModalCriacao({ tipo, negocioId, onClose, onCreated }) {
       .then(res => {
         if (!res.ok) {
           return res.json().then(err => {
-            console.error("Erro ao criar tarefa:", err);
+            console.error("Erro ao criar:", err);
             alert(JSON.stringify(err.detail || err, null, 2));
           });
         } else {
@@ -98,40 +98,31 @@ function ModalCriacao({ tipo, negocioId, onClose, onCreated }) {
 
         {tipo === "tarefa" && (
           <>
-            <label>Título</label>
-            <input className="campo" placeholder="Título" onChange={e => handleChange("titulo", e.target.value)} />
+            <label>Título<span className="required">*</span></label>
+            <input className="campo" placeholder="Título" onChange={e => handleChange("titulo", e.target.value)} required />
 
-            <label>Status</label>
-            <select className="campo" onChange={e => handleChange("status", e.target.value)}>
+            <label>Status<span className="required">*</span></label>
+            <select className="campo" onChange={e => handleChange("status", e.target.value)} required>
               <option value="">Selecione um status</option>
               <option value="pendente">Pendente</option>
               <option value="em_andamento">Em andamento</option>
               <option value="concluida">Concluída</option>
             </select>
 
-            <label>Prioridade</label>
-            <select className="campo" onChange={e => handleChange("prioridade", e.target.value)}>
+            <label>Prioridade<span className="required">*</span></label>
+            <select className="campo" onChange={e => handleChange("prioridade", e.target.value)} required>
               <option value="">Selecione uma prioridade</option>
               <option value="Baixa">Baixa</option>
               <option value="Média">Média</option>
               <option value="Alta">Alta</option>
               <option value="Crítica">Crítica</option>
             </select>
-                    
-            <label>Status</label>
-            <select className="campo" onChange={e => handleChange("status", e.target.value)}>
-              <option value="">Selecione um status</option>
-              <option value="pendente">Pendente</option>
-              <option value="em_andamento">Em andamento</option>
-              <option value="concluida">Concluída</option>
-            </select>
 
+            <label>Prazo<span className="required">*</span></label>
+            <input className="campo" type="date" onChange={e => handleChange("prazo", e.target.value)} required />
 
-            <label>Prazo</label>
-            <input className="campo" type="date" onChange={e => handleChange("prazo", e.target.value)} />
-
-            <label>Destinatário</label>
-            <select className="campo" onChange={e => handleChange("destinatario", parseInt(e.target.value))}>
+            <label>Destinatário<span className="required">*</span></label>
+            <select className="campo" onChange={e => handleChange("destinatario", parseInt(e.target.value))} required>
               <option value="">Selecione o usuário</option>
               {usuarios.map(user => (
                 <option key={user.id} value={user.id}>
@@ -142,23 +133,25 @@ function ModalCriacao({ tipo, negocioId, onClose, onCreated }) {
           </>
         )}
 
+        {/* Observação */}
         {tipo === "observacao" && (
           <>
-            <label>Texto da observação</label>
-            <textarea className="campo" onChange={e => handleChange("texto", e.target.value)} />
+            <label>Texto da observação<span className="required">*</span></label>
+            <textarea className="campo" onChange={e => handleChange("texto", e.target.value)} required />
           </>
         )}
 
+        {/* Reunião */}
         {tipo === "reuniao" && (
           <>
-            <label>Data</label>
-            <input className="campo" type="date" onChange={e => handleChange("data", e.target.value)} />
+            <label>Data<span className="required">*</span></label>
+            <input className="campo" type="date" onChange={e => handleChange("data", e.target.value)} required />
 
-            <label>Hora</label>
-            <input className="campo" type="time" onChange={e => handleChange("hora", e.target.value)} />
+            <label>Hora<span className="required">*</span></label>
+            <input className="campo" type="time" onChange={e => handleChange("hora", e.target.value)} required />
 
-            <label>Pauta</label>
-            <input className="campo" placeholder="Pauta" onChange={e => handleChange("pauta", e.target.value)} />
+            <label>Pauta<span className="required">*</span></label>
+            <input className="campo" placeholder="Pauta" onChange={e => handleChange("pauta", e.target.value)} required />
 
             <label>Participantes</label>
             <input className="campo" placeholder="Participantes" onChange={e => handleChange("participantes", e.target.value)} />

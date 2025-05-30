@@ -1,9 +1,18 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FaEdit, FaTrash, FaTasks, FaUserCircle, FaComments, FaRegClock } from "react-icons/fa";
+import {
+  FaEdit,
+  FaTrash,
+  FaTasks,
+  FaUserCircle,
+  FaComments,
+  FaRegClock,
+} from "react-icons/fa";
 import { BsCalendarEvent, BsPeopleFill } from "react-icons/bs";
 import ModalCriacao from "../../components/ModalCriacao";
+import { jwtDecode} from "jwt-decode";
 import "./negocio.css";
+
 
 function DetalhesNegocio() {
   const { id } = useParams();
@@ -17,6 +26,8 @@ function DetalhesNegocio() {
   const [reunioes, setReunioes] = useState([]);
   const [modalAberto, setModalAberto] = useState(false);
   const [tipoModal, setTipoModal] = useState("");
+  const [usuarioLogadoEmail, setUsuarioLogadoEmail] = useState("");
+
   const [form, setForm] = useState({
     titulo: "",
     solucao: "",
@@ -25,43 +36,51 @@ function DetalhesNegocio() {
     valor: "",
   });
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
 
-    fetch(`http://localhost:8000/negocios/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(res => res.json())
-      .then(data => {
-        setNegocio(data);
-        setForm({
-          titulo: data.titulo || "",
-          solucao: data.solucao || "",
-          fabricante: data.fabricante || "",
-          fechamento: data.fechamento || "",
-          valor: data.valor || "",
-        });
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  // Decodifica o token para extrair o email do usuário autenticado
+  const decoded = jwtDecode(token);
+  const emailLogado = decoded.sub;
+
+  setUsuarioLogadoEmail(emailLogado); // <- você precisa ter esse useState declarado
+
+  fetch(`http://localhost:8000/negocios/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      setNegocio(data);
+      setForm({
+        titulo: data.titulo || "",
+        solucao: data.solucao || "",
+        fabricante: data.fabricante || "",
+        fechamento: data.fechamento || "",
+        valor: data.valor || "",
       });
+    });
 
-    fetch(`http://localhost:8000/tarefas/negocio/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(res => res.json())
-      .then(setTarefas);
+  fetch(`http://localhost:8000/tarefas/negocio/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+    .then((res) => res.json())
+    .then(setTarefas);
 
-    fetch(`http://localhost:8000/observacoes/negocio/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(res => res.json())
-      .then(setObservacoes);
+  fetch(`http://localhost:8000/observacoes/negocio/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+    .then((res) => res.json())
+    .then(setObservacoes);
 
-    fetch(`http://localhost:8000/reunioes/negocio/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(res => res.json())
-      .then(setReunioes);
-  }, [id]);
+  fetch(`http://localhost:8000/reunioes/negocio/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+    .then((res) => res.json())
+    .then(setReunioes);
+}, [id]);
+
 
   const handleSalvar = () => {
     const token = localStorage.getItem("token");
@@ -88,6 +107,39 @@ function DetalhesNegocio() {
       headers: { Authorization: `Bearer ${token}` },
     }).then(() => navigate("/negocios"));
   };
+
+  const abrirModal = (tipo) => {
+    setTipoModal(tipo);
+    setModalAberto(true);
+  };
+
+  const marcarComoConcluida = async (tarefaId) => {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`http://localhost:8000/tarefas/${tarefaId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status: "concluida" }),
+    });
+
+    if (res.ok) {
+      const atualizadas = await fetch(
+        `http://localhost:8000/tarefas/negocio/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      ).then((res) => res.json());
+
+      setTarefas(atualizadas);
+    } else {
+      console.error("Erro ao marcar como concluída");
+    }
+  };
+
+
+  
 
   if (!negocio) return <p>Carregando...</p>;
 
@@ -120,38 +172,31 @@ function DetalhesNegocio() {
             <BsCalendarEvent /> Reuniões
           </button>
         </div>
-
-        <div className="btn-adicionar">
-          {aba === "tarefas" && (
-            <button onClick={() => { setTipoModal("tarefa"); setModalAberto(true); }}>
-              + Adicionar Tarefa
-            </button>
-          )}
-          {aba === "observacoes" && (
-            <button onClick={() => { setTipoModal("observacao"); setModalAberto(true); }}>
-              + Adicionar Observação
-            </button>
-          )}
-          {aba === "reunioes" && (
-            <button onClick={() => { setTipoModal("reuniao"); setModalAberto(true); }}>
-              + Adicionar Reunião
-            </button>
-          )}
-        </div>
-
-
-
+        <div className="btn-adicionar"> 
         <div className="conteudo-aba">
           {aba === "tarefas" && (
             <>
+              <div className="botoes-criacao">
+                <button onClick={() => abrirModal("tarefa")} className="btn-criar">
+                  Adicionar tarefa
+                </button>
+              </div>
+          
               {tarefas.length === 0 && <p>Nenhuma tarefa cadastrada.</p>}
-              {tarefas.map(tarefa => (
-                <div key={tarefa.id} className={`tarefa ${tarefa.status === "concluida" ? "finalizada" : "pendente"}`}>
+              {tarefas.map(t => (
+                <div className={`tarefa ${t.status === "concluida" ? "finalizada" : "pendente"}`} key={t.id}>
                   <details>
-                    <summary><strong>{tarefa.titulo}</strong></summary>
-                    <p><FaRegClock /> <strong>Prazo:</strong> {tarefa.prazo}</p>
-                    <p><strong>Status:</strong> {tarefa.status}</p>
-                    <p><strong>Prioridade:</strong> {tarefa.prioridade}</p>
+                    <summary><strong>{t.titulo}</strong></summary>
+                    <p><strong>Status:</strong> {t.status}</p>
+                    <p><strong>Prioridade:</strong> {t.prioridade}</p>
+                    <p><strong>Prazo:</strong> {new Date(t.prazo).toLocaleDateString()}</p>
+                    <p><strong>Criador:</strong> {t.criador?.nome || t.criador_id}</p>
+                    <p><strong>Destinatário:</strong> {t.destinatario_rel?.nome || t.destinatario}</p>
+                    {t.status !== "concluida" && t.destinatario_rel?.email === usuarioLogadoEmail && (
+                      <button onClick={() => marcarComoConcluida(t.id)} className="marcar-concluida">
+                        Marcar como concluída
+                      </button>
+                    )}
                   </details>
                 </div>
               ))}
@@ -159,26 +204,43 @@ function DetalhesNegocio() {
           )}
 
           {aba === "observacoes" && (
-            <div className="observacoes">
+            <>
+              <div className="botoes-criacao">
+                <button onClick={() => abrirModal("observacao")} className="btn-criar">
+                  Adicionar observação
+                </button>
+              </div>
+          
               {observacoes.length === 0 && <p>Nenhuma observação cadastrada.</p>}
-              {observacoes.map(obs => (
-                <p key={obs.id}><FaComments /> {obs.texto}</p>
+              {observacoes.map(o => (
+                <div key={o.id} className="observacao">
+                  <p>{o.texto}</p>
+                </div>
               ))}
-            </div>
+            </>
           )}
 
           {aba === "reunioes" && (
-            <div className="reunioes">
+            <>
+              <div className="botoes-criacao">
+                <button onClick={() => abrirModal("reuniao")} className="btn-criar">
+                  Adicionar reunião
+                </button>
+              </div>
+          
               {reunioes.length === 0 && <p>Nenhuma reunião cadastrada.</p>}
-              {reunioes.map(reuniao => (
-                <div key={reuniao.id}>
-                  <p><BsCalendarEvent /> {reuniao.data} às {reuniao.hora}</p>
-                  <p><FaComments /> {reuniao.pauta}</p>
-                  <p><BsPeopleFill /> Participantes: {reuniao.participantes}</p>
+              {reunioes.map(r => (
+                <div key={r.id} className="reuniao">
+                  <p><strong>Data:</strong> {r.data}</p>
+                  <p><strong>Hora:</strong> {r.hora}</p>
+                  <p><strong>Pauta:</strong> {r.pauta}</p>
+                  <p><strong>Participantes:</strong> {r.participantes}</p>
                 </div>
               ))}
-            </div>
-          )}
+          </>
+  )}
+</div>
+
         </div>
       </div>
 
