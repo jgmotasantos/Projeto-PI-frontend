@@ -26,7 +26,8 @@ function DetalhesNegocio() {
   const [reunioes, setReunioes] = useState([]);
   const [modalAberto, setModalAberto] = useState(false);
   const [tipoModal, setTipoModal] = useState("");
-  const [usuarioLogadoEmail, setUsuarioLogadoEmail] = useState("");
+  const [, setUsuarioLogadoEmail] = useState("");
+  const [tarefaEditando, setTarefaEditando] = useState(null);
 
   const [form, setForm] = useState({
     titulo: "",
@@ -113,30 +114,25 @@ useEffect(() => {
     setModalAberto(true);
   };
 
-  const marcarComoConcluida = async (tarefaId) => {
-    const token = localStorage.getItem("token");
-    const res = await fetch(`http://localhost:8000/tarefas/${tarefaId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ status: "concluida" }),
-    });
+  const salvarEdicaoTarefa = async (tarefaEditada) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`http://localhost:8000/tarefas/${tarefaEditando.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(tarefaEditada),
+  });
 
-    if (res.ok) {
-      const atualizadas = await fetch(
-        `http://localhost:8000/tarefas/negocio/${id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      ).then((res) => res.json());
-
-      setTarefas(atualizadas);
-    } else {
-      console.error("Erro ao marcar como concluída");
-    }
-  };
+  if (res.ok) {
+    const tarefaAtualizada = await res.json();
+    setTarefas(prev =>
+      prev.map(t => (t.id === tarefaAtualizada.id ? tarefaAtualizada : t))
+    );
+    setTarefaEditando(null);
+  }
+};
 
 
   
@@ -192,11 +188,13 @@ useEffect(() => {
                     <p><strong>Prazo:</strong> {new Date(t.prazo).toLocaleDateString()}</p>
                     <p><strong>Criador:</strong> {t.criador?.nome || t.criador_id}</p>
                     <p><strong>Destinatário:</strong> {t.destinatario_rel?.nome || t.destinatario}</p>
-                    {t.status !== "concluida" && t.destinatario_rel?.email === usuarioLogadoEmail && (
-                      <button onClick={() => marcarComoConcluida(t.id)} className="marcar-concluida">
-                        Marcar como concluída
+                    <p><strong>Descrição:</strong> {t.descricao}</p>
+                    {t.status !== "concluida" && (
+                      <button onClick={() => setTarefaEditando(t)} className="marcar-concluida">
+                        Editar
                       </button>
                     )}
+
                   </details>
                 </div>
               ))}
@@ -238,11 +236,39 @@ useEffect(() => {
                 </div>
               ))}
           </>
-  )}
-</div>
-
+          )}
+          {tarefaEditando && (
+            <div className="form-edicao-tarefa">
+              <h4>Editando: {tarefaEditando.titulo}</h4>
+              <input
+                type="text"
+                value={tarefaEditando.titulo}
+                onChange={(e) =>
+                  setTarefaEditando({ ...tarefaEditando, titulo: e.target.value })
+                }
+              />
+              <textarea
+                value={tarefaEditando.descricao}
+                onChange={(e) =>
+                  setTarefaEditando({ ...tarefaEditando, descricao: e.target.value })
+                }
+              />
+              <select
+                value={tarefaEditando.status}
+                onChange={(e) =>
+                  setTarefaEditando({ ...tarefaEditando, status: e.target.value })
+                }
+              >
+                <option value="pendente">Pendente</option>
+                <option value="concluida">Concluída</option>
+              </select>
+              <button onClick={() => salvarEdicaoTarefa(tarefaEditando)}>Salvar</button>
+              <button onClick={() => setTarefaEditando(null)}>Cancelar</button>
+            </div>
+          )}
         </div>
       </div>
+    </div>
 
       {/* DIREITA */}
       <div className="col-direita">
