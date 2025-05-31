@@ -9,7 +9,7 @@ function DetalhesContato() {
   const navigate = useNavigate();
   const [contato, setContato] = useState(null);
   const [empresas, setEmpresas] = useState([]);
-  const [aba, setAba] = useState("tarefas");
+  const [aba] = useState("tarefas");
   const [mostrarEdicao, setMostrarEdicao] = useState(false);
   const [confirmarExclusao, setConfirmarExclusao] = useState(false);
   const [erro, setErro] = useState(false);
@@ -93,25 +93,14 @@ function DetalhesContato() {
         </div>
         <p><strong>Email:</strong> {contato.email}</p>
         <p><strong>Telefone:</strong> {contato.telefone}</p>
-        {contato.empresa && (
-          <>
-            <hr />
-            <h4>Empresa</h4>
-            <p><strong>{contato.empresa.nome}</strong></p>
-            <p>{contato.empresa.cnpj}</p>
-          </>
-        )}
       </div>
 
       {/* COLUNA CENTRAL */}
       <div className="col-central">
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div className="abas">
-            <span className={aba === "tarefas" ? "ativa" : ""} onClick={() => setAba("tarefas")}>Tarefas</span>
-            <span className={aba === "observacoes" ? "ativa" : ""} onClick={() => setAba("observacoes")}>Observações</span>
-            <span className={aba === "reunioes" ? "ativa" : ""} onClick={() => setAba("reunioes")}>Reuniões</span>
+
           </div>
-          <button className="nova-btn">Criar nova tarefa</button>
         </div>
 
         <div className="conteudo-aba">
