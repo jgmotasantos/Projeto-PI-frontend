@@ -10,6 +10,9 @@ function DetalhesEmpresa() {
   const [mostrarEdicao, setMostrarEdicao] = useState(false);
   const [confirmarExclusao, setConfirmarExclusao] = useState(false);
   const [erro, setErro] = useState(false);
+  const [tarefas, setTarefas] = useState([]);
+  const [observacoes, setObservacoes] = useState([]);
+  const [reunioes, setReunioes] = useState([]);
 
   const [formulario, setFormulario] = useState({
     nome: "",
@@ -21,25 +24,68 @@ function DetalhesEmpresa() {
   });
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
+  const token = localStorage.getItem("token");
+  if (!token) return;
 
-    fetch(`http://localhost:8000/empresas/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setEmpresa(data);
-        setFormulario({
-          nome: data.nome || "",
-          dominio: data.dominio || "",
-          cnpj: data.cnpj || "",
-          area_atuacao: data.area_atuacao || "",
-          numero_funcionarios: data.numero_funcionarios || "",
-          fabricante: data.fabricante || false
-        });
+  fetch(`http://localhost:8000/empresas/${id}/atividades`, {
+  headers: { Authorization: `Bearer ${token}` },
+})
+  .then((res) => res.json())
+  .then((dados) => {
+    setTarefas(dados.tarefas || []);
+    setObservacoes(dados.observacoes || []);
+    setReunioes(dados.reunioes || []);
+  });
+
+
+  fetch(`http://localhost:8000/empresas/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+    .then((res) => res.json())
+    .then(async (data) => {
+      setEmpresa(data);
+      setFormulario({
+        nome: data.nome || "",
+        dominio: data.dominio || "",
+        cnpj: data.cnpj || "",
+        area_atuacao: data.area_atuacao || "",
+        numero_funcionarios: data.numero_funcionarios || "",
+        fabricante: data.fabricante || false
       });
-  }, [id]);
+
+      // 🟨 NOVA LÓGICA: Buscar tarefas, observações e reuniões de TODOS os negócios
+      const allTarefas = [];
+      const allObservacoes = [];
+      const allReunioes = [];
+
+      for (const negocio of data.negocios || []) {
+        try {
+          const [tarefasRes, obsRes, reunioesRes] = await Promise.all([
+            fetch(`http://localhost:8000/tarefas/negocio/${negocio.id}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            }),
+            fetch(`http://localhost:8000/observacoes/negocio/${negocio.id}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            }),
+            fetch(`http://localhost:8000/reunioes/negocio/${negocio.id}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            }),
+          ]);
+
+          if (tarefasRes.ok) allTarefas.push(...await tarefasRes.json());
+          if (obsRes.ok) allObservacoes.push(...await obsRes.json());
+          if (reunioesRes.ok) allReunioes.push(...await reunioesRes.json());
+        } catch (err) {
+          console.error("Erro ao buscar atividades de um negócio:", err);
+        }
+      }
+
+      setTarefas(allTarefas);
+      setObservacoes(allObservacoes);
+      setReunioes(allReunioes);
+    });
+}, [id]);
+
 
   const handleAtualizar = () => {
     if (!formulario.nome || !formulario.cnpj) {
@@ -89,7 +135,6 @@ function DetalhesEmpresa() {
   }
 };
 
-
   if (!empresa) return <p>Carregando empresa...</p>;
 
   return (
@@ -112,8 +157,40 @@ function DetalhesEmpresa() {
 
       {/* COLUNA CENTRAL */}
       <div className="col-central">
-        <h3>Atividades</h3>
-        <p>Esta seção exibirá atividades futuras da empresa.</p>
+        <h3>Atividades dos Negócios</h3>
+          <div className="grupo-atividades">
+            <h4>Tarefas ({tarefas.length})</h4>
+            {tarefas.length === 0 ? <p>Nenhuma tarefa.</p> : tarefas.map(t => (
+              <div key={t.id} className="atividade-card">
+                <strong>{t.titulo}</strong>
+                <p>Status: {t.status}</p>
+                <p>Prioridade: {t.prioridade}</p>
+                <p>Prazo: {t.prazo}</p>
+              </div>
+            ))}
+          </div>
+          
+          <div className="grupo-atividades">
+            <h4>Observações ({observacoes.length})</h4>
+            {observacoes.length === 0 ? <p>Nenhuma observação.</p> : observacoes.map(o => (
+              <div key={o.id} className="atividade-card">
+                <strong>{o.titulo}</strong>
+                <p>{o.conteudo}</p>
+              </div>
+            ))}
+          </div>
+          
+          <div className="grupo-atividades">
+            <h4>Reuniões ({reunioes.length})</h4>
+            {reunioes.length === 0 ? <p>Nenhuma reunião.</p> : reunioes.map(r => (
+              <div key={r.id} className="atividade-card">
+                <strong>{r.titulo}</strong>
+                <p>Data: {r.data}</p>
+                <p>Participantes: {r.participantes}</p>
+              </div>
+            ))}
+          </div>
+
       </div>
 
       {/* COLUNA DIREITA */}

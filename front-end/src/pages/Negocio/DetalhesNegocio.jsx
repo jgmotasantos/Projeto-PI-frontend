@@ -228,7 +228,7 @@ useEffect(() => {
           
               {reunioes.length === 0 && <p>Nenhuma reunião cadastrada.</p>}
               {reunioes.map(r => (
-                <div key={r.id} className="reuniao">
+                <div key={r.id} className="reuniao-card">
                   <p><strong>Data:</strong> {r.data}</p>
                   <p><strong>Hora:</strong> {r.hora}</p>
                   <p><strong>Pauta:</strong> {r.pauta}</p>

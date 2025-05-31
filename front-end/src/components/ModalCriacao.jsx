@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./modal.css";
 
+
 function ModalCriacao({ tipo, negocioId, onClose, onCreated }) {
   const [form, setForm] = useState({});
   const [usuarios, setUsuarios] = useState([]);
@@ -57,10 +58,11 @@ function ModalCriacao({ tipo, negocioId, onClose, onCreated }) {
     } else if (tipo === "reuniao") {
       endpoint = "reunioes";
       payload = {
+        titulo: form.titulo,
+        descricao: form.descricao,
+        pauta: form.pauta,
         data: form.data,
         hora: form.hora,
-        pauta: form.pauta,
-        participantes: form.participantes,
         negocio_id: negocioId,
         usuario_id: 1,
       };
@@ -143,20 +145,60 @@ function ModalCriacao({ tipo, negocioId, onClose, onCreated }) {
 
         {/* Reunião */}
         {tipo === "reuniao" && (
-          <>
-            <label>Data<span className="required">*</span></label>
-            <input className="campo" type="date" onChange={e => handleChange("data", e.target.value)} required />
+        <>
+          <label>Título<span className="required">*</span></label>
+          <input
+            className="campo"
+            placeholder="Título da reunião"
+            onChange={e => handleChange("titulo", e.target.value)}
+            required
+          />
 
-            <label>Hora<span className="required">*</span></label>
-            <input className="campo" type="time" onChange={e => handleChange("hora", e.target.value)} required />
+          <label>Descrição</label>
+          <textarea
+            className="campo"
+            placeholder="Descrição opcional"
+            onChange={e => handleChange("descricao", e.target.value)}
+          />
 
-            <label>Pauta<span className="required">*</span></label>
-            <input className="campo" placeholder="Pauta" onChange={e => handleChange("pauta", e.target.value)} required />
+          <label>Pauta</label>
+          <textarea
+            className="campo"
+            placeholder="Pauta da reunião"
+            onChange={e => handleChange("pauta", e.target.value)}
+          />
 
-            <label>Participantes</label>
-            <input className="campo" placeholder="Participantes" onChange={e => handleChange("participantes", e.target.value)} />
-          </>
-        )}
+          <label htmlFor="participantes">Participantes *</label>
+          <input
+            id="participantes"
+            type="text"
+            value={form.participantes || ""}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, participantes: e.target.value }))
+            }
+            placeholder="Digite os nomes dos participantes"
+            className="campo"
+            required
+          />
+
+          <label>Data<span className="required">*</span></label>
+          <input
+            className="campo"
+            type="date"
+            onChange={e => handleChange("data", e.target.value)}
+            required
+          />
+
+          <label>Hora</label>
+          <input
+            className="campo"
+            type="time"
+            onChange={e => handleChange("hora", e.target.value)}
+            required
+          />
+        </>
+      )}
+
 
         <div className="modal-actions">
           <button onClick={onClose}>Cancelar</button>
