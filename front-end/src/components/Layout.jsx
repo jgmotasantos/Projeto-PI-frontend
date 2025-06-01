@@ -60,7 +60,7 @@ function Layout() {
           <button className="icon-btn" onClick={() => navigate("/clientes")}>
             <UserIcon className="large-icon" />
           </button>
-          <button className="icon-btn" onClick={() => navigate("/tarefas")}>
+          <button className="icon-btn" onClick={() => navigate("/editais")}>
             <ClipboardDocumentListIcon className="large-icon" />
           </button>
         </nav>

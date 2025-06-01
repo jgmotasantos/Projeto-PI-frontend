@@ -9,7 +9,7 @@ import TelaInicial from "../pages/Inicial";
 import TelaEmpresa from "../pages/Empresa";
 import TelaCliente from "../pages/Cliente";
 import TelaNegocio from "../pages/Negocio";
-import TelaTarefa from "../pages/Tarefa";
+import TelaEditais from "../pages/Editais";
 import DetalhesEmpresa from "../pages/Empresa/DetalhesEmpresa";
 import DetalhesNegocio from "../pages/Negocio/DetalhesNegocio";
 import DetalhesContato from "../pages/Cliente/DetalhesContato";
@@ -33,7 +33,7 @@ function AppRoutes() {
           <Route path="/empresas/:id" element={<DetalhesEmpresa />} />
           <Route path="/clientes" element={<TelaCliente />} />
           <Route path="/negocios" element={<TelaNegocio />} />
-          <Route path="/tarefas" element={<TelaTarefa />} />
+          <Route path="/editais" element={<TelaEditais />} />
           <Route path="/negocios/:id" element={<DetalhesNegocio />} />
           <Route path="/contatos/:id" element={<DetalhesContato />} />
         </Route>
