@@ -9,7 +9,6 @@ function DetalhesContato() {
   const navigate = useNavigate();
   const [contato, setContato] = useState(null);
   const [empresas, setEmpresas] = useState([]);
-  const [aba] = useState("tarefas");
   const [mostrarEdicao, setMostrarEdicao] = useState(false);
   const [confirmarExclusao, setConfirmarExclusao] = useState(false);
   const [erro, setErro] = useState(false);
@@ -19,6 +18,29 @@ function DetalhesContato() {
     email: "",
     empresa_id: ""
   });
+
+  const dadosCentrais = [
+  {
+    tipo: "tarefa",
+    titulo: "Revisar proposta enviada",
+    data: "2025-06-01",
+    status: "pendente",
+  },
+  {
+    tipo: "observacao",
+    titulo: "Cliente demonstrou interesse em solução premium",
+    data: "2025-05-28",
+  },
+  {
+    tipo: "reuniao",
+    titulo: "Reunião agendada para apresentar funcionalidades",
+    data: "2025-06-03",
+    hora: "14:00",
+  },
+];
+
+
+  
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -104,9 +126,15 @@ function DetalhesContato() {
         </div>
 
         <div className="conteudo-aba">
-          {aba === "tarefas" && <p>Tarefas relacionadas ao contato.</p>}
-          {aba === "observacoes" && <p>Observações internas sobre o contato.</p>}
-          {aba === "reunioes" && <p>Reuniões com o contato.</p>}
+          {dadosCentrais.map((item, index) => (
+            <div key={index} className={`item-central tipo-${item.tipo}`}>
+              <div className="cabecalho-item">
+                <span className="tipo">{item.tipo.toUpperCase()}</span>
+                <span className="data">{item.data} {item.hora || ""}</span>
+              </div>
+              <p className="descricao">{item.titulo}</p>
+            </div>
+          ))}
         </div>
       </div>
 

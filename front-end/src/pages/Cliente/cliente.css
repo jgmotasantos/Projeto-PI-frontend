@@ -186,3 +186,42 @@
 .janela-confirmacao-central h4 {
   color: #000;
 }
+
+.item-central {
+  border: 1px solid #ddd;
+  border-left: 5px solid #999;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 12px;
+  background-color: #fafafa;
+  transition: 0.2s ease-in-out;
+}
+
+.item-central:hover {
+  background-color: #f0f0f0;
+}
+
+.item-central .cabecalho-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.item-central .descricao {
+  font-size: 14px;
+  margin: 0;
+}
+
+.tipo-tarefa {
+  border-left-color: #f39c12;
+}
+
+.tipo-observacao {
+  border-left-color: #3498db;
+}
+
+.tipo-reuniao {
+  border-left-color: #27ae60;
+}
