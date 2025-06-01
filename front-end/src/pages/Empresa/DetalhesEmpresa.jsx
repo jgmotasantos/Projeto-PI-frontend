@@ -102,7 +102,7 @@ function DetalhesEmpresa() {
       },
       body: JSON.stringify({
         ...formulario,
-        numero_funcionarios: parseInt(formulario.numero_funcionarios),
+        num_funcionarios: parseInt(formulario.numero_funcionarios),
       }),
     })
       .then(() => {
@@ -151,7 +151,7 @@ function DetalhesEmpresa() {
         <p><strong>Domínio:</strong> {empresa.dominio}</p>
         <p><strong>CNPJ:</strong> {empresa.cnpj}</p>
         <p><strong>Área de Atuação:</strong> {empresa.area_atuacao || "—"}</p>
-        <p><strong>Nº de Funcionários:</strong> {empresa.numero_funcionarios || "—"}</p>
+        <p><strong>Nº de Funcionários:</strong> {empresa.num_funcionarios || "—"}</p>
         <p><strong>Fabricante:</strong> {empresa.fabricante ? "Sim" : "Não"}</p>
       </div>
 
