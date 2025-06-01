@@ -7,7 +7,8 @@
 
 .container-editais h1 {
   color: black;
-  font-size: 40px;
+  font-size: 20px;
+  margin-bottom: 10px;
 }
 
 .tabela-editais table {

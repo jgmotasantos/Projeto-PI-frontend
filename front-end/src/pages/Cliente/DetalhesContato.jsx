@@ -117,7 +117,6 @@ function DetalhesContato() {
           <div className="item-card">
             <strong>{contato.empresa.nome}</strong>
             <p>CNPJ: {contato.empresa.cnpj}</p>
-            <p>Área: {contato.empresa.area_atuacao || "—"}</p>
           </div>
         ) : (
           <p>Nenhuma empresa associada.</p>
